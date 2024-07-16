@@ -1,0 +1,168 @@
+const numbers = [10,20,30,50]
+
+let total = 0
+
+for (const n of numbers)
+    {total = total +n;}
+
+total; // output - 110
+
+let total1 = numbers.reduce(
+    (cv,n) => {
+        cv + n
+    },
+    0
+)
+
+total1; // output - 110
+
+
+
+
+here both the variables, total and total1, have the same output as the same thing inside the for loop can be achieved from the reducer function
+
+an array has a function named 'reduce' which takes 2 parameters i.e., a reducer function and an initial value. In our example:
+
+reducer function: (cv,n) => {cv + n}
+initial value: 0
+
+
+Example:
+
+import { useReducer } from 'react'
+function App() {
+const [state, dispatch] = useReducer(
+  (state, action) => {
+    switch (action.type) {
+      case "SET_NAME":
+        return {...state, name: action.payload};
+        // run and see the behaviour of the app
+        // after that comment the above return statement and run the app from the below statements
+        // we'll see that when we run the app with the below statements nothing happens when we input a value this is
+        // because React checks the references coming out of the reducer and sees that it matches the existing reference
+        // it doesnt look into the contents of the object and compare both the contents. That's we create a new object
+        // using "return {...state, name: action.payload};" and then just mutate the fields.
+
+        // state.name = action.payload; return state;
+      
+    }},
+    { names: [], name: ""}
+)
+
+
+return (
+  <div className="App">
+    <div>
+      {state.names.map((name, index) => (
+        <div key={index}>{name}</div>
+      ))}
+    </div>
+    <input
+      type="text"
+      value={state.name}
+      onChange={(e) =>
+       { dispatch({ type: "SET_NAME", payload: e.target.value })
+       // we can use any key as reference. We can see here we have used 'type' and 'payload' as keys which can be anything but it is a conventional practice
+      }}
+    />
+    <div>Name = {state.name}</div>
+  </div>
+);
+}
+
+export default App;
+
+
+
+Example 2:
+
+import { useReducer } from 'react'
+function UserForm(){
+  const [state, dispatch] = useReducer((state, action) => ({
+    ...state,
+    ...action
+  }),{
+    firstName: '',
+    lastName: '',
+    
+  });
+  return (
+    <div>
+      <input 
+       type="text"
+       value={state.firstName}
+       onChange={(e)=> dispatch({firstName: e.target.value})}
+       ></input>
+       <input
+        type="text"
+        value={state.lastName}
+        onChange={(e)=> dispatch({lastName: e.target.value})}
+        ></input>
+      <div>FirstName: {state.firstName}</div>
+      <div>FirstName: {state.lastName}</div>
+    </div>
+    
+  );
+}
+
+
+function NameList() {
+const [state, dispatch] = useReducer(
+  (state, action) => {
+    switch (action.type) {
+      case "SET_NAME":
+        console.log("1. action",action)
+        console.log("1. state",state)
+        return {...state, name: action.payload};
+      case "ADD_NAME":{
+        console.log("2. action",action)
+        console.log("2. state",state)
+        return {
+          ...state,
+          names: [...state.names, state.name],
+          name:''
+        }
+      }
+    }},
+    { names: [], name: ""}
+)
+
+
+return (
+  <div className="App">
+    <div>
+      {state.names.map((name, index) => (
+        <div key={index}>{name}</div>
+      ))}
+    </div>
+    <input
+      type="text"
+      value={state.name}
+      onChange={(e) =>
+       { dispatch({ type: "SET_NAME", payload: e.target.value })
+       // we can use any key as reference. We can see here we have used 'type' and 'payload' as keys which can be anything but it is a conventional practice
+        console.log("onchange - ",e)}
+      }
+    />
+    <button onClick={() => dispatch({ type: "ADD_NAME" })}>Add Name</button>
+  </div>
+);
+}
+
+
+function App(){
+  return (
+    <div>
+      <NameList />
+      <UserForm />
+    </div>
+
+  );
+}
+
+export default App;
+
+
+As we can see that we can change the state/values of attributes of an object individually which makes it very easy to manage object state using useReducer
+
+

@@ -1,0 +1,14 @@
+function getState() {
+    let value = 42
+    return value;
+}
+
+let myValue = getState();
+myValue; // 42
+myValue = 22;
+myValue; // 22
+
+let myValueAgain = getState();
+myValueAgain; // 42
+
+this is because Scalers that includes strings, booleans, numbers are returned and passed by value whereas arrays and objects are passed by reference. 
